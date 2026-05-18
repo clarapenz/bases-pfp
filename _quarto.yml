@@ -1,0 +1,12 @@
+project:
+  type: website
+  output-dir: docs
+
+website:
+  title: "bases-pfp"
+
+format:
+  html:
+    theme: cosmo
+    css: style.css
+    toc: true
