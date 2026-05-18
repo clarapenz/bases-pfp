@@ -1,0 +1,93 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "bases-pfp: Fluxo de processamento de dados para gerar planilha estruturada de informações sobre credenciamentos no Programa Farmácia Popular a nível nacional (fevereiro de 2026)",
+    "section": "",
+    "text": "Clara L. S. Penz"
+  },
+  {
+    "objectID": "index.html#ativar-bibliotecas-necessárias",
+    "href": "index.html#ativar-bibliotecas-necessárias",
+    "title": "bases-pfp: Fluxo de processamento de dados para gerar planilha estruturada de informações sobre credenciamentos no Programa Farmácia Popular a nível nacional (fevereiro de 2026)",
+    "section": "Ativar bibliotecas necessárias",
+    "text": "Ativar bibliotecas necessárias\n\nlibrary(here)\nlibrary(arrow)\nlibrary(dplyr)\nlibrary(arrow)\nlibrary(readxl)\nlibrary(stringr)\nlibrary(ggplot2)\nlibrary(lubridate)\nlibrary(readr)\nlibrary(tidyr)\n#library(pbapply)\nlibrary(purrr)"
+  },
+  {
+    "objectID": "index.html#definir-diretório-de-trabalho",
+    "href": "index.html#definir-diretório-de-trabalho",
+    "title": "bases-pfp: Fluxo de processamento de dados para gerar planilha estruturada de informações sobre credenciamentos no Programa Farmácia Popular a nível nacional (fevereiro de 2026)",
+    "section": "Definir diretório de trabalho",
+    "text": "Definir diretório de trabalho\n\n\n\n\n\n\nNote\n\n\n\n⚠️ Necessário ajustar conforme o processamento em cada máquina.\n\n\n\nhere()\n\n[1] \"D:/MESTRADO/GIT_NOTEBOOK/bases-pfp\""
+  },
+  {
+    "objectID": "index.html#criar-dirtórios-para-armazenamento",
+    "href": "index.html#criar-dirtórios-para-armazenamento",
+    "title": "bases-pfp: Fluxo de processamento de dados para gerar planilha estruturada de informações sobre credenciamentos no Programa Farmácia Popular a nível nacional (fevereiro de 2026)",
+    "section": "Criar dirtórios para armazenamento",
+    "text": "Criar dirtórios para armazenamento"
+  },
+  {
+    "objectID": "index.html#descompactar-e-organizar-arquivos-do-cnpj",
+    "href": "index.html#descompactar-e-organizar-arquivos-do-cnpj",
+    "title": "bases-pfp: Fluxo de processamento de dados para gerar planilha estruturada de informações sobre credenciamentos no Programa Farmácia Popular a nível nacional (fevereiro de 2026)",
+    "section": "Descompactar e organizar arquivos do CNPJ",
+    "text": "Descompactar e organizar arquivos do CNPJ\nNecessário realizar dowload manual de todos os arquivos, que devem ser mantidos na pasta “1-inputs”. Favor, selecionar todos os arquivos para um dowload único. Aqui, utilizaremos os arquivos de março de 2026, por esse motivo a pasta dentro de 1-inputs é chamada de “cnpj_202603\n\n\n\n\n\n\nNote\n\n\n\n⚠️ O download pode levar várias horas!\n\n\n\n# unzip_cnpj &lt;- function(zip_principal,\n#                        dir_principal,\n#                        saida = \"descompactado\",\n#                        remove_all_zips = TRUE) {\n#   \n#   saida_dir &lt;- file.path(dir_principal, saida)\n#   dir.create(saida_dir, showWarnings = FALSE, recursive = TRUE)\n#   \n#   unzip(zip_principal, exdir = saida_dir)\n#   \n#   zips_internos &lt;- list.files(saida_dir,\n#                                pattern = \"\\\\.zip$\",\n#                                full.names = TRUE,\n#                                recursive = TRUE)\n#   \n#   dir_estab  &lt;- file.path(saida_dir, \"estabelecimentos\")\n#   dir_emp    &lt;- file.path(saida_dir, \"empresas\")\n#   dir_soc    &lt;- file.path(saida_dir, \"socios\")\n#   dir_outros &lt;- file.path(saida_dir, \"demais_arquivos\")\n#   \n#   dirs &lt;- c(dir_estab, dir_emp, dir_soc, dir_outros)\n#   lapply(dirs, dir.create, showWarnings = FALSE, recursive = TRUE)\n#   \n#   get_pasta &lt;- function(nome) {\n#     if (grepl(\"Estabelecimentos\", nome, ignore.case = TRUE)) return(dir_estab)\n#     if (grepl(\"Empresas\", nome, ignore.case = TRUE)) return(dir_emp)\n#     if (grepl(\"Socios\", nome, ignore.case = TRUE)) return(dir_soc)\n#     return(dir_outros)\n#   }\n#   \n#   for (z in zips_internos) {\n#     destino &lt;- get_pasta(basename(z))\n#     subdir &lt;- file.path(destino,\n#                         tools::file_path_sans_ext(basename(z)))\n#     \n#     dir.create(subdir, showWarnings = FALSE, recursive = TRUE)\n#     unzip(z, exdir = subdir)\n#   }\n#   \n#   if (remove_all_zips) {\n#     file.remove(c(zip_principal, zips_internos))\n#   }\n#   \n#   invisible(list(\n#     output_dir = saida_dir,\n#     inner_zips = length(zips_internos)\n#   ))\n# }\n\nExecutar função\n\n# unzip_cnpj(\n#   zip_principal = \"1-inputs/cnpj_202603/download.zip\",\n#   dir_principal = \"1-inputs/cnpj_202603\",\n#   saida = \"descompactado\",\n#   remove_all_zips = TRUE\n# )"
+  },
+  {
+    "objectID": "index.html#trasformar-arquivos-de-estabelecimento-em-.parquet",
+    "href": "index.html#trasformar-arquivos-de-estabelecimento-em-.parquet",
+    "title": "bases-pfp: Fluxo de processamento de dados para gerar planilha estruturada de informações sobre credenciamentos no Programa Farmácia Popular a nível nacional (fevereiro de 2026)",
+    "section": "Trasformar arquivos de estabelecimento em .parquet",
+    "text": "Trasformar arquivos de estabelecimento em .parquet\n\n# arquivos_estab &lt;- list.files(\n#   \"1-inputs/cnpj_202603/descompactado/estabelecimentos\",\n#   full.names = TRUE,\n#   recursive = TRUE\n# )\n# \n# dir.create(\n#   \"1-inputs/cnpj_202603/parquet_estabelecimentos\",\n#   recursive = TRUE,\n#   showWarnings = FALSE\n# )\n# \n# colunas &lt;- c(\n#   \"id_cnpj_basico\", \n#   \"ds_cnpj_ordem\", \n#   \"ds_cnpj_dv\", \n#   \"tp_matriz_filial\",\n#   \"no_nome_fantasia\", \n#   \"tp_situacao_cadastral\",\n#   \"dt_situacao_cadastral\",\n#   \"ds_situacao_cadastral\",\n#   \"no_cidade_exterior\", \n#   \"co_pais\",\n#   \"dt_inicio_atividade\", \n#   \"co_cnae_fiscal_principal\", \n#   \"co_cnae_fiscal_secundario\",\n#   \"no_tipo_logradouro\", \n#   \"no_logradouro\", \n#   \"nu_numero\", \n#   \"no_complemento\", \n#   \"no_bairro\",\n#   \"co_cep\", \n#   \"sg_uf\", \n#   \"co_municipio_tom\", \n#   \"nu_ddd_1\", \n#   \"nu_telefone_1\", \n#   \"nu_ddd_2\", \n#   \"nu_telefone_2\",\n#   \"nu_ddd_fax\", \n#   \"nu_fax\", \n#   \"no_correio_eletronico\", \n#   \"tp_situacao_especial\", \n#   \"dt_situacao_especial\"\n# )\n# \n# pblapply(\n#   arquivos_estab,\n#   function(arq) {\n#     message(\"Convertendo: \", basename(arq))\n# \n#     df &lt;- read_delim(\n#       file = arq,\n#       delim = \";\",\n#       col_names = colunas,\n#       col_types = cols(.default = \"c\"),\n#       locale = locale(encoding = \"Latin1\"),\n#       show_col_types = FALSE\n#     )\n# \n#     nome_saida &lt;- file.path(\n#       \"1-inputs/cnpj_202603/parquet_estabelecimentos\",\n#       paste0(tools::file_path_sans_ext(basename(arq)), \".parquet\")\n#     )\n# \n#     write_parquet(df, nome_saida)\n#   }\n# )"
+  },
+  {
+    "objectID": "index.html#definir-função-para-leitura-de-arquivos-armazenados-em-repositório-da-osf",
+    "href": "index.html#definir-função-para-leitura-de-arquivos-armazenados-em-repositório-da-osf",
+    "title": "bases-pfp: Fluxo de processamento de dados para gerar planilha estruturada de informações sobre credenciamentos no Programa Farmácia Popular a nível nacional (fevereiro de 2026)",
+    "section": "Definir função para leitura de arquivos armazenados em repositório da OSF",
+    "text": "Definir função para leitura de arquivos armazenados em repositório da OSF\n\nler_osf_xlsx &lt;- function(url, ...) {\n  \n  file_id &lt;- stringr::str_extract(url, \"[A-Za-z0-9]+$\")\n  download_url &lt;- paste0(\"https://osf.io/download/\", file_id, \"/\")\n  \n  temp_file &lt;- tempfile(fileext = \".xlsx\")\n  \n  download.file(\n    download_url,\n    destfile = temp_file,\n    mode = \"wb\"\n  )\n  \n  readxl::read_excel(temp_file, ...)\n}\n\nFarmácias credenciadas\n\npfp_cred &lt;- ler_osf_xlsx(\n  \"https://osf.io/az4w7/files/kxztu\",\n  skip = 13,\n  col_names = c(\n    \"uf\",\n    \"co_municipio_ibge\",\n    \"no_municipio\",\n    \"co_cnpj\",\n    \"no_farmacia\",\n    \"no_endereco\",\n    \"no_bairro\",\n    \"dt_credenciamento\"\n  ),\n  col_types = c(\n    \"text\", \"text\", \"text\", \"text\",\n    \"text\", \"text\", \"text\", \"date\"\n  )\n) %&gt;%\n  # ajustar cnpjs que não estejam padronizados\n  mutate(\n    co_cnpj = str_remove_all(co_cnpj, \"\\\\D\"),\n    co_cnpj = str_pad(co_cnpj, 14, side = \"left\", pad = \"0\"),\n\n    co_cnpj = str_c(\n      str_sub(co_cnpj, 1, 2), \".\",\n      str_sub(co_cnpj, 3, 5), \".\",\n      str_sub(co_cnpj, 6, 8), \"/\",\n      str_sub(co_cnpj, 9, 12), \"-\",\n      str_sub(co_cnpj, 13, 14)\n    )\n  )\n\nWarning: Expecting date in I1049 / R1049C9: got '30/01/2026'\n\n\nWarning: Expecting date in I1218 / R1218C9: got '30/01/2026'\n\n\nWarning: Expecting date in I1789 / R1789C9: got '30/01/2026'\n\n\nWarning: Expecting date in I1791 / R1791C9: got '30/01/2026'\n\n\nWarning: Expecting date in I4738 / R4738C9: got '30/01/2026'\n\n\nWarning: Expecting date in I5296 / R5296C9: got '30/01/2026'\n\n\nWarning: Expecting date in I12796 / R12796C9: got '30/01/2026'\n\n\nWarning: Expecting date in I21311 / R21311C9: got '30/01/2026'\n\n\nWarning: Expecting date in I22687 / R22687C9: got '30/01/2026'\n\n\nWarning: Expecting date in I28551 / R28551C9: got '30/01/2026'\n\npfp_cred$dt_descredenciamento &lt;- NA\n\nFarmácias descredenciadas\n\npfp_descred &lt;- ler_osf_xlsx(\n  \"https://osf.io/az4w7/files/qw5rg\",\n  skip = 1,\n  col_names = c(\n    \"uf\",\n    \"co_municipio_ibge\",\n    \"no_municipio\",\n    \"co_cnpj\",\n    \"no_farmacia\",\n    \"no_endereco\",\n    \"no_bairro\",\n    \"dt_credenciamento\",\n    \"dt_descredenciamento\"\n  ),\n  col_types = rep(\"text\", 9)\n) %&gt;%\n  dplyr::mutate(\n    dplyr::across(\n      starts_with(\"dt_\"),\n      ~ dplyr::case_when(\n        stringr::str_detect(.x, \"^\\\\d+$\") ~ \n          as.Date(as.numeric(.x), origin = \"1899-12-30\"),\n\n        TRUE ~ lubridate::dmy(.x)\n      )\n    )\n  ) %&gt;%\n  # ajustar cnpjs que não estejam padronizados\n  mutate(\n    co_cnpj = str_remove_all(co_cnpj, \"\\\\D\"),\n    co_cnpj = str_pad(co_cnpj, 14, side = \"left\", pad = \"0\"),\n\n    co_cnpj = str_c(\n      str_sub(co_cnpj, 1, 2), \".\",\n      str_sub(co_cnpj, 3, 5), \".\",\n      str_sub(co_cnpj, 6, 8), \"/\",\n      str_sub(co_cnpj, 9, 12), \"-\",\n      str_sub(co_cnpj, 13, 14)\n    )\n  )\n\nWarning: There were 4 warnings in `dplyr::mutate()`.\nThe first warning was:\nℹ In argument: `dplyr::across(...)`.\nCaused by warning in `as.Date()`:\n! NAs introduzidos por coerção\nℹ Run `dplyr::last_dplyr_warnings()` to see the 3 remaining warnings."
+  },
+  {
+    "objectID": "index.html#unir-planilhas-de-credenciamentos-e-descredenciamentos",
+    "href": "index.html#unir-planilhas-de-credenciamentos-e-descredenciamentos",
+    "title": "bases-pfp: Fluxo de processamento de dados para gerar planilha estruturada de informações sobre credenciamentos no Programa Farmácia Popular a nível nacional (fevereiro de 2026)",
+    "section": "Unir planilhas de credenciamentos e descredenciamentos",
+    "text": "Unir planilhas de credenciamentos e descredenciamentos\n\npfp_total &lt;- rbind(pfp_cred, pfp_descred)"
+  },
+  {
+    "objectID": "index.html#testar-número-de-credenciamentos-por-ano",
+    "href": "index.html#testar-número-de-credenciamentos-por-ano",
+    "title": "bases-pfp: Fluxo de processamento de dados para gerar planilha estruturada de informações sobre credenciamentos no Programa Farmácia Popular a nível nacional (fevereiro de 2026)",
+    "section": "Testar número de credenciamentos por ano",
+    "text": "Testar número de credenciamentos por ano\n\nanos &lt;- data.frame(\n  ano = seq(\n    year(min(pfp_total$dt_credenciamento, na.rm = TRUE)),\n    year(Sys.Date())\n  )\n)\n\nativas_ano &lt;- anos %&gt;%\n  rowwise() %&gt;%\n  mutate(\n    n_ativas = sum(\n      pfp_total$dt_credenciamento &lt;= as.Date(paste0(ano, \"-12-31\")) &\n        (\n          is.na(pfp_total$dt_descredenciamento) |\n          pfp_total$dt_descredenciamento &gt; as.Date(paste0(ano, \"-12-31\"))\n        ),\n      na.rm = TRUE\n    )\n  ) %&gt;%\n  ungroup()\n\nggplot(ativas_ano, aes(x = ano, y = n_ativas)) +\n  geom_line(linewidth = 1) +\n  geom_point() +\n  labs(\n    title = \"Número de farmácias credenciadas ativas por ano\",\n    x = \"Ano\",\n    y = \"Farmácias ativas\"\n  ) +\n  theme_minimal()"
+  },
+  {
+    "objectID": "index.html#testar-número-de-credenciamentos-por-ano-e-unidade-federativa",
+    "href": "index.html#testar-número-de-credenciamentos-por-ano-e-unidade-federativa",
+    "title": "bases-pfp: Fluxo de processamento de dados para gerar planilha estruturada de informações sobre credenciamentos no Programa Farmácia Popular a nível nacional (fevereiro de 2026)",
+    "section": "Testar número de credenciamentos por ano e unidade federativa",
+    "text": "Testar número de credenciamentos por ano e unidade federativa\n\nanos &lt;- seq(\n  year(min(pfp_total$dt_credenciamento, na.rm = TRUE)),\n  year(Sys.Date())\n)\n\nufs &lt;- sort(unique(pfp_total$uf))\n\npainel_longo &lt;- expand.grid(\n  uf = ufs,\n  ano = anos,\n  stringsAsFactors = FALSE\n)\n\npainel_longo$n_ativas &lt;- mapply(\n  function(uf_atual, ano_atual) {\n    data_ref &lt;- as.Date(paste0(ano_atual, \"-12-31\"))\n\n    sum(\n      pfp_total$uf == uf_atual &\n        pfp_total$dt_credenciamento &lt;= data_ref &\n        (\n          is.na(pfp_total$dt_descredenciamento) |\n          pfp_total$dt_descredenciamento &gt; data_ref\n        ),\n      na.rm = TRUE\n    )\n  },\n  painel_longo$uf,\n  painel_longo$ano\n)\n\npainel_uf &lt;- painel_longo %&gt;%\n  pivot_wider(\n    names_from = ano,\n    values_from = n_ativas,\n    values_fill = 0\n  ) %&gt;%\n  arrange(uf)\n\nDT::datatable(\n  painel_uf,\n  extensions = \"FixedColumns\",\n  options = list(\n    scrollX = TRUE,\n    scrollY = \"500px\",\n    paging = FALSE,\n    fixedColumns = list(leftColumns = 2)\n  )\n)"
+  },
+  {
+    "objectID": "index.html#baixar-arquivos-.parquet-da-rf",
+    "href": "index.html#baixar-arquivos-.parquet-da-rf",
+    "title": "bases-pfp: Fluxo de processamento de dados para gerar planilha estruturada de informações sobre credenciamentos no Programa Farmácia Popular a nível nacional (fevereiro de 2026)",
+    "section": "Baixar arquivos .parquet da RF",
+    "text": "Baixar arquivos .parquet da RF\nDefinir URLs para acesso aos arquivos da RF disponibilizados na OSF\n\narquivos_estab &lt;- c(\n  \"https://osf.io/download/4wkpr/\",\n  \"https://osf.io/download/8ecvh/\",\n  \"https://osf.io/download/nadr7/\",\n  \"https://osf.io/download/bge43/\",\n  \"https://osf.io/download/nhujp/\",\n  \"https://osf.io/download/fkqxj/\",\n  \"https://osf.io/download/x58c9/\",\n  \"https://osf.io/download/2sjrg/\",\n  \"https://osf.io/download/4e5vb/\",\n  \"https://osf.io/download/d73an/\"\n)\n\nAumentar tempo máximo de download nas configurações Baixar os arquivos para a pasta cnpj_202603/estab_parquet dentro de 1-inputs\n\noptions(timeout = 12000)\n\ndir.create(\"1-inputs/cnpj_202603/estab_parquet\", recursive = TRUE, showWarnings = FALSE)\n\narquivos_estab &lt;- c(\n  \"https://osf.io/download/4wkpr/\",\n  \"https://osf.io/download/8ecvh/\",\n  \"https://osf.io/download/nadr7/\",\n  \"https://osf.io/download/bge43/\",\n  \"https://osf.io/download/nhujp/\",\n  \"https://osf.io/download/fkqxj/\",\n  \"https://osf.io/download/x58c9/\",\n  \"https://osf.io/download/2sjrg/\",\n  \"https://osf.io/download/4e5vb/\",\n  \"https://osf.io/download/d73an/\"\n)\n\nfor (i in seq_along(arquivos_estab)) {\n  \n  destino &lt;- file.path(\n    \"1-inputs/cnpj_202603/estab_parquet\",\n    paste0(\"estab_\", i, \".parquet\")\n  )\n  \n  cat(\"Baixando:\", arquivos_estab[i], \"\\n\")\n  \n  try(\n    download.file(\n      url = arquivos_estab[i],\n      destfile = destino,\n      mode = \"wb\",\n      method = \"libcurl\"\n    )\n  )\n}"
+  },
+  {
+    "objectID": "index.html#ler-e-filtrar-arquivos-da-rf",
+    "href": "index.html#ler-e-filtrar-arquivos-da-rf",
+    "title": "bases-pfp: Fluxo de processamento de dados para gerar planilha estruturada de informações sobre credenciamentos no Programa Farmácia Popular a nível nacional (fevereiro de 2026)",
+    "section": "Ler e filtrar arquivos da RF",
+    "text": "Ler e filtrar arquivos da RF\nCriar vetor de armazenamento dos CNPJs das farmácias credenciadas ao PFP.\n\ncnpjs_pfp &lt;- unique(pfp_total$co_cnpj)\n\n\nestab_pfp &lt;- open_dataset(\"1-inputs/cnpj_202603/estab_parquet\") %&gt;%\n  select(\n    id_cnpj_basico,\n    ds_cnpj_ordem,\n    ds_cnpj_dv,\n    tp_matriz_filial,\n    co_cnae_fiscal_principal,\n    no_tipo_logradouro,\n    no_logradouro,\n    nu_numero\n    ) %&gt;%\n  mutate(\n    id_cnpj_basico = str_pad(as.character(id_cnpj_basico), 8, pad = \"0\"),\n    ds_cnpj_ordem = str_pad(as.character(ds_cnpj_ordem), 4, pad = \"0\"),\n    ds_cnpj_dv = str_pad(as.character(ds_cnpj_dv), 2, pad = \"0\"),\n\n    co_cnpj = str_c(\n      str_sub(id_cnpj_basico, 1, 2), \".\",\n      str_sub(id_cnpj_basico, 3, 5), \".\",\n      str_sub(id_cnpj_basico, 6, 8), \"/\",\n      ds_cnpj_ordem, \"-\",\n      ds_cnpj_dv\n    )\n  ) %&gt;%\n  filter(co_cnpj %in% cnpjs_pfp) %&gt;%\n  collect()"
+  },
+  {
+    "objectID": "index.html#unir-planilhas-da-rf-e-do-ms",
+    "href": "index.html#unir-planilhas-da-rf-e-do-ms",
+    "title": "bases-pfp: Fluxo de processamento de dados para gerar planilha estruturada de informações sobre credenciamentos no Programa Farmácia Popular a nível nacional (fevereiro de 2026)",
+    "section": "Unir planilhas da RF e do MS",
+    "text": "Unir planilhas da RF e do MS\n\nestab_pfp_completo &lt;- pfp_total %&gt;% \n  left_join(estab_pfp, by = \"co_cnpj\")"
+  }
+]
