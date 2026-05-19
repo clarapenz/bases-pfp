@@ -10,6 +10,13 @@
 ![Quarto](https://img.shields.io/badge/report-Quarto-39729E)
 ![Data](https://img.shields.io/badge/data-mar%C3%A7o%202026-6f42c1)
 
+
+## O Projeto
+
+O *geografia-pfp* reúne scripts, bases de dados e rotinas de processamento relacionados à pesquisa de mestrado **“Programa Farmácia Popular: dilemas do acesso público via locais privados”**, desenvolvida no Programa de Pós-Graduação em Geografia Humana da Universidade de São Paulo. O projeto investiga a distribuição territorial e os limites de acesso ao Programa Farmácia Popular do Brasil, com foco na dependência de farmácias privadas credenciadas e nas relações entre Estado, mercado e assistência farmacêutica no território brasileiro. Pesquisa com apoio da Coordenação de Aperfeiçoamento de Pessoal de Nível Superior (CAPES), protocolo 88887.311041/2026-00.
+
+PENZ, C. *geografia-pfp: Geografia - Programa Farmácia Popular*. Disponível em: <osf.io/ptm5y>.
+
 ## Descrição
 
 Este repositório reúne rotinas de tratamento, padronização e integração de dados provenientes de duas fontes principais:

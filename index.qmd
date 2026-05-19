@@ -26,41 +26,35 @@ Clara L. S. Penz
 <a href="https://www.gov.br/capes/" target="_blank"> <img src="images/capes.png" alt="CAPES"/> </a>
 :::
 
-<div class="badges">
-  <span>
-    <a href="https://www.gnu.org/licenses/quick-guide-gplv3.pt-br.html" target="_blank">
-      <img src="https://img.shields.io/badge/license-GPLv3-1d70b8" alt="GPLv3">
-    </a>
-  </span>
+::: badges
+<a href="https://www.gnu.org/licenses/quick-guide-gplv3.pt-br.html" target="_blank"> <img src="https://img.shields.io/badge/license-GPLv3-1d70b8" alt="GPLv3"/> </a>
 
-  <span>
-    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">
-      <img src="https://img.shields.io/badge/license-CC_BY--NC--SA_4.0-lightgrey.svg" alt="Licença CC BY-NC-SA 4.0">
-    </a>
-  </span>
+<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank"> <img src="https://img.shields.io/badge/license-CC_BY--NC--SA_4.0-lightgrey.svg" alt="Licença CC BY-NC-SA 4.0"/> </a>
 
-  <span>
-    <img src="https://img.shields.io/badge/status-em%20desenvolvimento-f2c230" alt="status">
-  </span>
+<img src="https://img.shields.io/badge/status-em%20desenvolvimento-f2c230" alt="status"/>
 
-  <span>
-    <img src="https://img.shields.io/badge/version-1.0-1d6f42" alt="version">
-  </span>
+<img src="https://img.shields.io/badge/version-1.0-1d6f42" alt="version"/>
 
-  <span>
-    <img src="https://img.shields.io/badge/copyright-2026-b32636" alt="copyright">
-  </span>
-</div>
+<img src="https://img.shields.io/badge/copyright-2026-b32636" alt="copyright"/>
+:::
+
+# O Projeto
+
+O *geografia-pfp* reúne scripts, bases de dados e rotinas de processamento relacionados à pesquisa de mestrado **“Programa Farmácia Popular: dilemas do acesso público via locais privados”**, desenvolvida no Programa de Pós-Graduação em Geografia Humana da Universidade de São Paulo. O projeto investiga a distribuição territorial e os limites de acesso ao Programa Farmácia Popular do Brasil, com foco na dependência de farmácias privadas credenciadas e nas relações entre Estado, mercado e assistência farmacêutica no território brasileiro. Pesquisa com apoio da Coordenação de Aperfeiçoamento de Pessoal de Nível Superior (CAPES), protocolo 88887.311041/2026-00.
+
+PENZ, C. *geografia-pfp: Geografia - Programa Farmácia Popular*. Disponível em: <osf.io/ptm5y>.
+
+------------------------------------------------------------------------
 
 # Dicionário de Siglas
 
-- **RF**: Receita Federal  
-- **MS**: Ministério da Saúde  
-- **PFP**: Programa Farmácia Popular  
-- **OSF**: Open Science Framework
-- **CNPJ**: Cadastro Nacional de Pessoa Jurídica
+-   **RF**: Receita Federal\
+-   **MS**: Ministério da Saúde\
+-   **PFP**: Programa Farmácia Popular\
+-   **OSF**: Open Science Framework
+-   **CNPJ**: Cadastro Nacional de Pessoa Jurídica
 
----
+------------------------------------------------------------------------
 
 ## Ativar bibliotecas necessárias
 
@@ -98,13 +92,14 @@ dir.create("2-parcial")
 dir.create("3-outputs")
 ```
 
----
+------------------------------------------------------------------------
 
 # Definir e aplicar função para pré-processamento da RF
 
 Essa parte pode ser ignorada, trata-se do registro sobre como foi feito o tratamento de dados da RF. Os arquivos referentes à RF já estão disponibilizados em `.parquet` na OSF. Os arquivos são referentes ao mês de **março de 2026**.
 
 ## Descompactar e organizar arquivos do CNPJ
+
 Necessário realizar dowload manual de todos os arquivos, que devem ser mantidos na pasta "1-inputs". Favor, selecionar todos os arquivos para um dowload único. Aqui, utilizaremos os arquivos de março de 2026, por esse motivo a pasta dentro de 1-inputs é chamada de "cnpj_202603
 
 ::: callout-note
@@ -163,6 +158,7 @@ Necessário realizar dowload manual de todos os arquivos, que devem ser mantidos
 ```
 
 Executar função
+
 ```{r}
 # unzip_cnpj(
 #   zip_principal = "1-inputs/cnpj_202603/download.zip",
@@ -245,8 +241,7 @@ Executar função
 
 ```
 
-
----
+------------------------------------------------------------------------
 
 # Ler e ajustar arquivos do MS (PFP)
 
@@ -272,6 +267,7 @@ ler_osf_xlsx <- function(url, ...) {
 ```
 
 Farmácias credenciadas
+
 ```{r}
 pfp_cred <- ler_osf_xlsx(
   "https://osf.io/az4w7/files/kxztu",
@@ -356,7 +352,7 @@ pfp_descred <- ler_osf_xlsx(
 
 ```
 
----
+------------------------------------------------------------------------
 
 ## Unir planilhas de credenciamentos e descredenciamentos
 
@@ -456,7 +452,7 @@ DT::datatable(
 )
 ```
 
----
+------------------------------------------------------------------------
 
 # Unir dados da RF e do PFP
 
@@ -480,8 +476,7 @@ arquivos_estab <- c(
 
 ```
 
-Aumentar tempo máximo de download nas configurações
-Baixar os arquivos para a pasta cnpj_202603/estab_parquet dentro de 1-inputs
+Aumentar tempo máximo de download nas configurações Baixar os arquivos para a pasta cnpj_202603/estab_parquet dentro de 1-inputs
 
 ```{r, eval=FALSE}
 options(timeout = 12000)
@@ -524,11 +519,11 @@ for (i in seq_along(arquivos_estab)) {
 ## Ler e filtrar arquivos da RF
 
 Criar vetor de armazenamento dos CNPJs das farmácias credenciadas ao PFP.
+
 ```{r}
 cnpjs_pfp <- unique(pfp_total$co_cnpj)
 
 ```
-
 
 ```{r}
 estab_pfp <- open_dataset("1-inputs/cnpj_202603/estab_parquet") %>%
@@ -566,8 +561,7 @@ estab_pfp_completo <- pfp_total %>%
   left_join(estab_pfp, by = "co_cnpj")
 ```
 
-
----
+------------------------------------------------------------------------
 
 # Escrever planilha em `.csv`
 
@@ -575,8 +569,7 @@ estab_pfp_completo <- pfp_total %>%
 write.csv(estab_pfp_completo, "3-outputs/estab_pbp_completo.csv")
 ```
 
-
----
+------------------------------------------------------------------------
 
 # Testar dados do PFP a partir de amostra
 
@@ -588,7 +581,7 @@ Penz, C. L. S. *bases-pfp: Fluxo de processamento de dados para gerar planilha e
 
 Para usuários de LaTEX:
 
-```latex
+``` latex
 @software{penz_2025,
   title = {bases-pfp: Fluxo de processamento de dados para gerar planilha estruturada de informações sobre credenciamentos no Programa Farmácia Popular a nível nacional (fevereiro de 2026)},
   author = {Clara de Lima e Silva Penz},
@@ -599,16 +592,16 @@ Para usuários de LaTEX:
   url = {https://clarapenz.github.io/bases-pfp/}
 }
 ```
+
 # Licença
 
-[![Licença: GPLv3](https://img.shields.io/badge/license-GPLv3-bd0000.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![Licença: CC BY-NC-SA 4.0](https://img.shields.io/badge/license-CC_BY--NC--SA_4.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+[![Licença: GPLv3](https://img.shields.io/badge/license-GPLv3-bd0000.svg)](https://www.gnu.org/licenses/gpl-3.0) [![Licença: CC BY-NC-SA 4.0](https://img.shields.io/badge/license-CC_BY--NC--SA_4.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 
 > As fontes de dados originais podem estar sujeitas a seus próprios termos e condições de licenciamento.
 
 O código deste repositório está licenciado sob a [Licença Pública Geral GNU versão 3](https://www.gnu.org/licenses/gpl-3.0), enquanto o relatório está disponível sob a licença [Creative Commons Atribuição-NãoComercial-CompartilhaIgual 4.0 Internacional](https://creativecommons.org/licenses/by-nc-sa/4.0/).
 
-```
+```         
 Copyright (C) 2025 Clara L. S. Penz
 
 The code in this report is free software: you can redistribute it and/or
@@ -635,5 +628,3 @@ Também destaco o papel do Departamento de Geografia da Universidade de São Pau
 BRASIL. Ministério da Saúde. Dados de farmácias credenciadas ao Programa Farmácia Popular do Brasil. Consulta realizada por meio do Portal da Transparência. Brasília, DF, fev. 2026.
 
 BRASIL. Secretaria Especial da Receita Federal do Brasil. **Dados abertos CNPJ – março 2026**. Brasília, DF: Receita Federal do Brasil, 2026. Disponível em: https://dados.receita.fazenda.gov.br/CNPJ/. Acesso em: 18 maio 2026.
-
-
