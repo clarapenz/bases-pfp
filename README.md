@@ -59,15 +59,16 @@ Arquivos de estabelecimentos foram convertidos para formato `.parquet` para otim
 
 Para referenciar este trabalho, utilize o seguinte formato:
 
-Penz, C. L. S. *bases-pfp: Fluxo de processamento de dados para gerar planilha estruturada de informações sobre credenciamentos no Programa Farmácia Popular a nível nacional (fevereiro de 2026)* \[Software\]. Universidade de São Paulo. <https://clarapenz.github.io/bases-pfp/>
+Penz, C. L. S. *bases-pfp: Fluxo de processamento de dados para gerar planilha estruturada de informações sobre credenciamentos no Programa Farmácia Popular a nível nacional (fevereiro de 2026)* \[Software\]. São Paulo: Universidade de São Paulo, 2026. <https://clarapenz.github.io/bases-pfp/>
+
 
 Para usuários de LaTEX:
 
 ```latex
-@software{penz_2025,
+@@software{penz_2026_bases,
   title = {bases-pfp: Fluxo de processamento de dados para gerar planilha estruturada de informações sobre credenciamentos no Programa Farmácia Popular a nível nacional (fevereiro de 2026)},
   author = {Clara de Lima e Silva Penz},
-  year = {2025},
+  year = {2026},
   address = {São Paulo},
   institution = {Universidade de São Paulo},
   langid = {pt},
