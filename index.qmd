@@ -42,7 +42,7 @@ Clara L. S. Penz
 
 O *geografia-pfp* reúne scripts, bases de dados e rotinas de processamento relacionados à pesquisa de mestrado **“Programa Farmácia Popular: dilemas do acesso público via locais privados”**, desenvolvida no Programa de Pós-Graduação em Geografia Humana da Universidade de São Paulo. O projeto investiga a distribuição territorial e os limites de acesso ao Programa Farmácia Popular do Brasil, com foco na dependência de farmácias privadas credenciadas e nas relações entre Estado, mercado e assistência farmacêutica no território brasileiro. Pesquisa com apoio da Coordenação de Aperfeiçoamento de Pessoal de Nível Superior (CAPES), protocolo 88887.311041/2026-00.
 
-PENZ, C. *geografia-pfp: Geografia - Programa Farmácia Popular*. Disponível em: <osf.io/ptm5y>.
+PENZ, C. *geografia-pfp: Geografia - Programa Farmácia Popular*. Disponível em: \<osf.io/ptm5y\>.
 
 ------------------------------------------------------------------------
 
@@ -286,7 +286,7 @@ pfp_cred <- ler_osf_xlsx(
     "text", "text", "text", "text",
     "text", "text", "text", "date"
   )
-) %>%
+) |>
   # ajustar cnpjs que não estejam padronizados
   mutate(
     co_cnpj = str_remove_all(co_cnpj, "\\D"),
@@ -323,7 +323,7 @@ pfp_descred <- ler_osf_xlsx(
     "dt_descredenciamento"
   ),
   col_types = rep("text", 9)
-) %>%
+) |>
   dplyr::mutate(
     dplyr::across(
       starts_with("dt_"),
@@ -334,7 +334,7 @@ pfp_descred <- ler_osf_xlsx(
         TRUE ~ lubridate::dmy(.x)
       )
     )
-  ) %>%
+  ) |>
   # ajustar cnpjs que não estejam padronizados
   mutate(
     co_cnpj = str_remove_all(co_cnpj, "\\D"),
@@ -371,8 +371,8 @@ anos <- data.frame(
   )
 )
 
-ativas_ano <- anos %>%
-  rowwise() %>%
+ativas_ano <- anos |>
+  rowwise() |>
   mutate(
     n_ativas = sum(
       pfp_total$dt_credenciamento <= as.Date(paste0(ano, "-12-31")) &
@@ -382,7 +382,7 @@ ativas_ano <- anos %>%
         ),
       na.rm = TRUE
     )
-  ) %>%
+  ) |>
   ungroup()
 
 ggplot(ativas_ano, aes(x = ano, y = n_ativas)) +
@@ -432,12 +432,12 @@ painel_longo$n_ativas <- mapply(
   painel_longo$ano
 )
 
-painel_uf <- painel_longo %>%
+painel_uf <- painel_longo |>
   pivot_wider(
     names_from = ano,
     values_from = n_ativas,
     values_fill = 0
-  ) %>%
+  ) |>
   arrange(uf)
 
 DT::datatable(
@@ -526,7 +526,7 @@ cnpjs_pfp <- unique(pfp_total$co_cnpj)
 ```
 
 ```{r}
-estab_pfp <- open_dataset("1-inputs/cnpj_202603/estab_parquet") %>%
+estab_pfp <- open_dataset("1-inputs/cnpj_202603/estab_parquet") |>
   select(
     id_cnpj_basico,
     ds_cnpj_ordem,
@@ -535,8 +535,9 @@ estab_pfp <- open_dataset("1-inputs/cnpj_202603/estab_parquet") %>%
     co_cnae_fiscal_principal,
     no_tipo_logradouro,
     no_logradouro,
-    nu_numero
-    ) %>%
+    nu_numero,
+    co_cep
+    ) |>
   mutate(
     id_cnpj_basico = str_pad(as.character(id_cnpj_basico), 8, pad = "0"),
     ds_cnpj_ordem = str_pad(as.character(ds_cnpj_ordem), 4, pad = "0"),
@@ -549,15 +550,18 @@ estab_pfp <- open_dataset("1-inputs/cnpj_202603/estab_parquet") %>%
       ds_cnpj_ordem, "-",
       ds_cnpj_dv
     )
-  ) %>%
-  filter(co_cnpj %in% cnpjs_pfp) %>%
+  ) |>
+  filter(co_cnpj %in% cnpjs_pfp) |>
   collect()
 ```
 
 ## Unir planilhas da RF e do MS
 
 ```{r}
-estab_pfp_completo <- pfp_total %>% 
+pfp_total <- pfp_total |>
+  mutate(dt_descredenciamento = as.Date(dt_descredenciamento))
+
+estab_pfp_completo <- pfp_total |> 
   left_join(estab_pfp, by = "co_cnpj")
 ```
 
