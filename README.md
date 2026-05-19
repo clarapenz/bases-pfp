@@ -52,7 +52,7 @@ Arquivos de estabelecimentos foram convertidos para formato `.parquet` para otim
 
 Para referenciar este trabalho, utilize o seguinte formato:
 
-Penz, C. L. S. *bases-pfp: Fluxo de processamento de dados para gerar planilha estruturada de informações sobre credenciamentos no Programa Farmácia Popular a nível nacional (fevereiro de 2026)* \[Software\]. Universidade de São Paulo. <LINK>
+Penz, C. L. S. *bases-pfp: Fluxo de processamento de dados para gerar planilha estruturada de informações sobre credenciamentos no Programa Farmácia Popular a nível nacional (fevereiro de 2026)* \[Software\]. Universidade de São Paulo. <https://clarapenz.github.io/bases-pfp/>
 
 Para usuários de LaTEX:
 
@@ -64,7 +64,7 @@ Para usuários de LaTEX:
   address = {São Paulo},
   institution = {Universidade de São Paulo},
   langid = {pt},
-  url = {}
+  url = {https://clarapenz.github.io/bases-pfp/}
 }
 ```
 # Licença

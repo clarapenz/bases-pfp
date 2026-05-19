@@ -1,0 +1,5 @@
+/.quarto/
+**/*.quarto_ipynb
+1-inputs/
+2-parcial/
+3-outputs/
